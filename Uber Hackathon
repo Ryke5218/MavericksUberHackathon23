@@ -1,0 +1,40 @@
+import requests
+
+# The Uber API endpoint (hypothetical)
+uber_api_url = 'https://api.uber.com/book-cab'
+
+#The public transport API endpoint (hypothetical)
+public_transport_api_url = 'https://api.publictransport.com/get-routes'
+
+# User inputs for the cab booking
+user_location = '123 Main St'
+destination = '456 Elm St'
+
+# Make a request to book a cab with Uber
+uber_params = {
+    'start_location': user_location,
+    'destination': destination
+}
+uber_response = requests.post(uber_api_url, json=uber_params)
+
+if uber_response.status_code == 200:
+    # Uber cab booked successfully
+    print("Uber cab booked!")
+
+    # Now, let's check for public transport options
+    public_transport_params = {
+        'start_location': user_location,
+        'destination': destination
+    }
+    public_transport_response = requests.get(public_transport_api_url, params=public_transport_params)
+
+    if public_transport_response.status_code == 200:
+        # Parse and display public transport options
+        public_transport_data = public_transport_response.json()
+        print("Public Transport Options:")
+        for route in public_transport_data['routes']:
+            print("Route: {route['name']}, Duration: {route['duration']} minutes")
+    else:
+        print("Failed to retrieve public transport options.")
+else:
+    print("Failed to book an Uber cab.")
